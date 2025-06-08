@@ -2,9 +2,12 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Небольшой веб-сервер для поиска клиентов
+
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Токены API берутся из переменных окружения
 const fbToken = process.env.FACEBOOK_ACCESS_TOKEN;
 const twToken = process.env.TWITTER_BEARER_TOKEN;
 
@@ -17,6 +20,7 @@ if (!twToken) {
 
 app.use(express.static(__dirname));
 
+// Маршрут API для выполнения поиска во всех сетях
 app.get('/api/search', async (req, res) => {
   const query = req.query.query;
   if (!query) return res.status(400).json({ error: 'query required' });
@@ -69,6 +73,7 @@ app.get('/api/search', async (req, res) => {
   res.json(results);
 });
 
+// Сервер по умолчанию слушает порт 3000
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Simple script to search Facebook pages and Instagram hashtags using the Graph API
-// Requires a valid access token with appropriate permissions.
+// Простая утилита для поиска клиентов в Facebook и Instagram
+// Требуется действительный токен доступа в переменной окружения FACEBOOK_ACCESS_TOKEN
 
 const token = process.env.FACEBOOK_ACCESS_TOKEN;
 if (!token) {
@@ -14,6 +14,7 @@ if (!query) {
   process.exit(1);
 }
 
+// Поиск публичных страниц Facebook
 async function searchFacebookPages(search) {
   const url = `https://graph.facebook.com/v19.0/search?type=page&q=${encodeURIComponent(search)}&access_token=${token}`;
   const res = await fetch(url);
@@ -24,6 +25,7 @@ async function searchFacebookPages(search) {
   return data.data || [];
 }
 
+// Поиск хэштегов Instagram
 async function searchInstagramHashtags(search) {
   const url = `https://graph.facebook.com/v19.0/ig_hashtag_search?q=${encodeURIComponent(search)}&access_token=${token}`;
   const res = await fetch(url);
@@ -35,6 +37,7 @@ async function searchInstagramHashtags(search) {
 }
 
 (async () => {
+  // Основной поток выполнения
   try {
     const [pages, hashtags] = await Promise.all([
       searchFacebookPages(query),
