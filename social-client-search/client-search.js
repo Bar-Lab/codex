@@ -1,10 +1,18 @@
 #!/usr/bin/env node
 // Простая утилита для поиска клиентов в Facebook и Instagram
-// Требуется действительный токен доступа в переменной окружения FACEBOOK_ACCESS_TOKEN
+// Требуются действительные токены доступа из переменных окружения
+// FACEBOOK_ACCESS_TOKEN и INSTAGRAM_ACCESS_TOKEN (можно использовать один токен
+// от Meta для обоих сервисов)
 
-const token = process.env.FACEBOOK_ACCESS_TOKEN;
-if (!token) {
+const fbToken = process.env.FACEBOOK_ACCESS_TOKEN;
+const igToken = process.env.INSTAGRAM_ACCESS_TOKEN || fbToken;
+
+if (!fbToken) {
   console.error("FACEBOOK_ACCESS_TOKEN environment variable not set");
+  process.exit(1);
+}
+if (!igToken) {
+  console.error("INSTAGRAM_ACCESS_TOKEN environment variable not set");
   process.exit(1);
 }
 
@@ -16,7 +24,7 @@ if (!query) {
 
 // Поиск публичных страниц Facebook
 async function searchFacebookPages(search) {
-  const url = `https://graph.facebook.com/v19.0/search?type=page&q=${encodeURIComponent(search)}&access_token=${token}`;
+  const url = `https://graph.facebook.com/v19.0/search?type=page&q=${encodeURIComponent(search)}&access_token=${fbToken}`;
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Facebook API error: ${res.status}`);
@@ -27,7 +35,7 @@ async function searchFacebookPages(search) {
 
 // Поиск хэштегов Instagram
 async function searchInstagramHashtags(search) {
-  const url = `https://graph.facebook.com/v19.0/ig_hashtag_search?q=${encodeURIComponent(search)}&access_token=${token}`;
+  const url = `https://graph.facebook.com/v19.0/ig_hashtag_search?q=${encodeURIComponent(search)}&access_token=${igToken}`;
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Instagram API error: ${res.status}`);

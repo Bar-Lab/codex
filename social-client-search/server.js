@@ -9,10 +9,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Токены API берутся из переменных окружения
 const fbToken = process.env.FACEBOOK_ACCESS_TOKEN;
+const igToken = process.env.INSTAGRAM_ACCESS_TOKEN || fbToken; // Instagram может использовать тот же токен Meta
 const twToken = process.env.TWITTER_BEARER_TOKEN;
 
 if (!fbToken) {
   console.warn('FACEBOOK_ACCESS_TOKEN not set');
+}
+if (!igToken) {
+  console.warn('INSTAGRAM_ACCESS_TOKEN not set');
 }
 if (!twToken) {
   console.warn('TWITTER_BEARER_TOKEN not set');
@@ -38,7 +42,7 @@ app.get('/api/search', async (req, res) => {
         fetch(
           `https://graph.facebook.com/v19.0/ig_hashtag_search?q=${encodeURIComponent(
             query
-          )}&access_token=${fbToken}`
+          )}&access_token=${igToken}`
         ).then((r) => r.json()),
       ]);
       results['Facebook Pages'] = (pages.data || []).map(
