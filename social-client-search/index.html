@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Client Search</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+      }
+      #results {
+        margin-top: 1rem;
+      }
+      .source {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Social Client Search</h1>
+    <p>Search for potential clients on Facebook, Instagram, and Twitter.</p>
+    <input id="query" type="text" placeholder="Search query" />
+    <button id="searchBtn">Search</button>
+    <div id="results"></div>
+    <script>
+      document.getElementById('searchBtn').addEventListener('click', async () => {
+        const query = document.getElementById('query').value.trim();
+        if (!query) return;
+        const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        if (!res.ok) {
+          alert('Error fetching results');
+          return;
+        }
+        const data = await res.json();
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+        for (const [key, items] of Object.entries(data)) {
+          const section = document.createElement('div');
+          section.className = 'source';
+          const title = document.createElement('h2');
+          title.textContent = key;
+          section.appendChild(title);
+          if (items.length === 0) {
+            section.appendChild(document.createTextNode('No results'));
+          } else {
+            const ul = document.createElement('ul');
+            for (const item of items) {
+              const li = document.createElement('li');
+              li.textContent = item;
+              ul.appendChild(li);
+            }
+            section.appendChild(ul);
+          }
+          resultsDiv.appendChild(section);
+        }
+      });
+    </script>
+  </body>
+</html>

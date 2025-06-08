@@ -1,0 +1,12 @@
+{
+  "name": "social-client-search",
+  "private": true,
+  "description": "Example app to search for clients on social networks",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
